@@ -26,6 +26,7 @@
         <!--应用列表页面-->
         <activity android:name=".activity.AppListActivity"
             android:label="@string/appList"/>
+        <activity android:name=".activity.ConnectedWifiListActivity" />
 
         <!-- 配置文件提供器 -->
         <provider

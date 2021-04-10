@@ -157,6 +157,10 @@ class MainActivity : AppCompatActivity() {
                         }
                     }).show()
         }
+
+        btnSelectWifi.setOnClickListener {
+            startActivity(Intent(this,ConnectedWifiListActivity::class.java))
+        }
     }
 
 
