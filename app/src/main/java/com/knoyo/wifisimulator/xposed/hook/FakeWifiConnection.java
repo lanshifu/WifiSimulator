@@ -158,6 +158,11 @@ public class FakeWifiConnection
         return wifissid;
     }
 
+    /**
+     * 设置保存的wifi信息
+     * @return
+     * @throws Exception
+     */
     public WifiInfo createWifiInfo() throws Exception
     {
         // WifiInfo info = new WifiInfo();
@@ -173,14 +178,17 @@ public class FakeWifiConnection
         XposedHelpers.setObjectField((Object)info, "mBSSID", "66:55:44:33:22:11");
         XposedHelpers.setObjectField((Object)info, "mMacAddress", "11:22:33:44:55:66");
         XposedHelpers.setObjectField((Object)info, "mIpAddress", addr);
-        XposedHelpers.setIntField((Object)info, "mLinkSpeed", 65);  // Mbps
-        if (Build.VERSION.SDK_INT >= 21) XposedHelpers.setIntField((Object)info, "mFrequency", 5000); // MHz
-        XposedHelpers.setIntField((Object)info, "mRssi", 200); // MAX_RSSI
+        XposedHelpers.setIntField((Object) info, "mLinkSpeed", 65);  // Mbps
+        if (Build.VERSION.SDK_INT >= 21)
+            XposedHelpers.setIntField((Object) info, "mFrequency", 5000); // MHz
+        XposedHelpers.setIntField((Object) info, "mRssi", 200); // MAX_RSSI
 
-        try
-        {  XposedHelpers.setObjectField((Object)info, "mWifiSsid", createWifiSsid()); } // Kitkat
-        catch (Error e)
-        {  XposedHelpers.setObjectField((Object)info, "mSSID", "FakeWifi");  }	      // Jellybean
+        try {
+            XposedHelpers.setObjectField((Object) info, "mWifiSsid", createWifiSsid());
+        } // Kitkat
+        catch (Error e) {
+            XposedHelpers.setObjectField((Object) info, "mSSID", "FakeWifi");
+        }          // Jellybean
 
         return info;
     }

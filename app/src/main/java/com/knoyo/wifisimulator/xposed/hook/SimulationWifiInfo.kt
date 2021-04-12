@@ -36,8 +36,9 @@ object SimulationWifiInfo {
             XposedHelpers.findAndHookMethod(WifiInfo::class.java, GET_WIFI_NAME_METHOD, object : XC_MethodHook(){
                 @Throws(Throwable::class)
                 override fun beforeHookedMethod(param: MethodHookParam) {
-                    XposedBridge.log("${SimulationWifiInfo::class.java.name} -> hook $GET_WIFI_NAME_METHOD")
-                    param.result = "\"${wifiInfoPrefs.wifiName}\""
+                    val wifiName = wifiInfoPrefs.wifiName
+                    XposedBridge.log("${SimulationWifiInfo::class.java.name} -> hook $GET_WIFI_NAME_METHOD ：${wifiName}")
+                    param.result = wifiName
                 }
             })
         }catch (t: Throwable) {
@@ -48,8 +49,9 @@ object SimulationWifiInfo {
             XposedHelpers.findAndHookMethod(WifiInfo::class.java, GET_WIFI_BSSID_METHOD, object : XC_MethodHook(){
                 @Throws(Throwable::class)
                 override fun beforeHookedMethod(param: MethodHookParam) {
-                    XposedBridge.log("${SimulationWifiInfo::class.java.name} -> hook $GET_WIFI_BSSID_METHOD")
-                    param.result = wifiInfoPrefs.wifiBssid
+                    val wifiBssid = wifiInfoPrefs.wifiBssid
+                    XposedBridge.log("${SimulationWifiInfo::class.java.name} -> hook $GET_WIFI_BSSID_METHOD：${wifiBssid }}")
+                    param.result = wifiBssid
                 }
             })
         }catch (t: Throwable) {
@@ -60,8 +62,9 @@ object SimulationWifiInfo {
             XposedHelpers.findAndHookMethod(WifiInfo::class.java, GET_WIFI_IP_METHOD, object : XC_MethodHook(){
                 @Throws(Throwable::class)
                 override fun beforeHookedMethod(param: MethodHookParam) {
-                    XposedBridge.log("${SimulationWifiInfo::class.java.name} -> hook $GET_WIFI_IP_METHOD")
-                    param.result = wifiInfoPrefs.wifiIP
+                    val wifiIP = wifiInfoPrefs.wifiIP
+                    XposedBridge.log("${SimulationWifiInfo::class.java.name} -> hook $GET_WIFI_IP_METHOD :$wifiIP")
+                    param.result = wifiIP
                 }
             })
         }catch (t: Throwable) {
