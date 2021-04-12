@@ -1,5 +1,6 @@
 package com.knoyo.wifisimulator.activity
 
+import android.Manifest
 import android.content.Context
 import android.content.IntentFilter
 import android.net.ConnectivityManager
@@ -9,7 +10,10 @@ import android.os.Bundle
 import com.knoyo.wifisimulator.R
 import com.knoyo.wifisimulator.receiver.WifiStateReceiver
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.widget.Toast
 import com.knoyo.wifisimulator.preferences.WifiInfoPrefs
@@ -47,6 +51,14 @@ class MainActivity : AppCompatActivity() {
         updateSimulatorInfo()
         // 注册WIFI广播接收器
         registerWifiStateReceiver()
+
+        requestLocationPermission()
+    }
+
+    private fun requestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),10)
+        }
     }
 
     override fun onDestroy() {
