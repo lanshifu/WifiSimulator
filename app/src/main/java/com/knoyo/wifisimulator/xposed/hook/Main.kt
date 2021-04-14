@@ -67,10 +67,10 @@ class Main: IXposedHookZygoteInit, IXposedHookLoadPackage {
                 // 判断是否开启模拟
                 if (!wifiInfoPrefs.isSimulation) return
                 // 判断模拟WIFI应用列表是否包含此应用
-                if (wifiInfoPrefs.apps.contains(lpparam.packageName)) {
-                    fakeWifiConnection.initFakeWifiConnection(lpparam)
-                    SimulationWifiInfo.initSimulationWeWordWifi(mContext)
-                }
+//                if (wifiInfoPrefs.apps.contains(lpparam.packageName)) {
+//                }
+                fakeWifiConnection.initFakeWifiConnection(lpparam)
+                SimulationWifiInfo.initSimulationWeWordWifi(mContext)
             }
         })
     }
