@@ -2,6 +2,7 @@ package com.knoyo.wifisimulator.xposed.hook
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import com.knoyo.wifisimulator.preferences.WifiInfoPrefs
 import de.robv.android.xposed.*
 import de.robv.android.xposed.callbacks.XC_LoadPackage
@@ -53,6 +54,7 @@ class Main: IXposedHookZygoteInit, IXposedHookLoadPackage {
             // 方法执行后hook
             @Throws(Throwable::class)
             override fun beforeHookedMethod(param: MethodHookParam) {
+                Log.d("TAG", "beforeHookedMethod: ${lpparam.packageName}")
                 // 获取上下文
                 val mContext = param.args[0] as Context
                 // 获取配置
@@ -64,10 +66,16 @@ class Main: IXposedHookZygoteInit, IXposedHookLoadPackage {
                         WifiSimulator.initXposedActive(lpparam)
                     }
                 }
-                // 判断是否开启模拟
-                if (!wifiInfoPrefs.isSimulation) return
+
                 // 判断模拟WIFI应用列表是否包含此应用
                 if (wifiInfoPrefs.apps.contains(lpparam.packageName)) {
+
+                    // 判断是否开启模拟
+                    if (!wifiInfoPrefs.isSimulation) {
+                        XposedBridge.log("FakeWifiConnection: 未开启模拟,${lpparam.packageName}")
+                        return
+                    }
+
                     fakeWifiConnection.initFakeWifiConnection(lpparam)
                     SimulationWifiInfo.initSimulationWeWordWifi(mContext)
                 }

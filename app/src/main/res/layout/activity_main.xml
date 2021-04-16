@@ -148,6 +148,7 @@
 
                     <!--WIFI名字-->
                     <EditText
+                        android:text="lizhi-test"
                         android:id="@+id/main_set_wifi_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -155,6 +156,7 @@
 
                     <!--MAC地址-->
                     <EditText
+                        android:text="44:6a:2e:24:85:f4"
                         android:id="@+id/main_set_wifi_bssid"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -162,6 +164,7 @@
 
                     <!--IP地址-->
                     <EditText
+                        android:text="1125099712"
                         android:id="@+id/main_set_wifi_ip"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
