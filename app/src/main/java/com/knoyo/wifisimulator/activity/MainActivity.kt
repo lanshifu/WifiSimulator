@@ -15,6 +15,7 @@ import android.net.Uri
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.widget.Toast
 import com.knoyo.wifisimulator.preferences.WifiInfoPrefs
 import com.knoyo.wifisimulator.util.AppsUtil
@@ -59,14 +60,6 @@ class MainActivity : AppCompatActivity() {
 
         requestLocationPermission()
 
-        val expModuleActive = AppsUtil.isExpModuleActive(this)
-        if (expModuleActive) {
-            tvModuleActive.text = "模块已激活"
-            tvModuleActive.setTextColor(resources.getColor(R.color.green))
-        } else {
-            tvModuleActive.text = "模块未激活"
-            tvModuleActive.setTextColor(resources.getColor(R.color.red))
-        }
     }
 
     private fun requestLocationPermission() {
@@ -152,7 +145,7 @@ class MainActivity : AppCompatActivity() {
                 // 更新模拟信息
                 updateSimulatorInfo()
                 // 检验Xposed是否激活
-                if (XposedUtil.isXposedActive()) {
+                if (XposedUtil.isXposedActive() || XposedUtil.isExpModuleActive(this)) {
                     Toast.makeText(this@MainActivity, this@MainActivity.getString(R.string.successfulSimulation), Toast.LENGTH_LONG).show()
                 }else {
                     Toast.makeText(this@MainActivity, this@MainActivity.getString(R.string.toActiveXposed), Toast.LENGTH_LONG).show()
@@ -175,27 +168,25 @@ class MainActivity : AppCompatActivity() {
         main_support_me.setOnClickListener {
             AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
                     .setTitle(R.string.supportMode)
-                    .setItems(arrayOf(getString(R.string.githubStar),getString(R.string.aliPay)), { _, which ->
+                    .setItems(arrayOf(getString(R.string.githubStar)), { _, which ->
                         when (which) {
                             0 -> {
-                                val uri = Uri.parse("https://github.com/xuelongqy/WifiSimulator")
+                                val uri = Uri.parse("https://github.com/lanshifu/WifiSimulator")
                                 val intent = Intent(Intent.ACTION_VIEW, uri)
                                 startActivity(intent)
-                            }
-                            1 -> {
-                                if (!AlipayZeroSdk.hasInstalledAlipayClient(this)) {
-                                    Toast.makeText(this, R.string.alipayNotFound, Toast.LENGTH_SHORT).show()
-                                    return@setItems
-                                }
-                                AlipayZeroSdk.startAlipayClient(this, "FKX03889Z997BS1BNALOC9")
                             }
                         }
                     }).show()
         }
 
-        btnSelectWifi.setOnClickListener {
-            startActivity(Intent(this,ConnectedWifiListActivity::class.java))
-        }
+
+        updateSupportApp()
+    }
+
+    private fun updateSupportApp() {
+        val supportApp = wifiInfoPrefs.apps
+        tvSupportApp.text = "支持包名:${supportApp}"
+        Log.i("TAG", "支持包名:${supportApp}")
     }
 
     private fun getCurrentConnectedWifiInfo(){
@@ -207,6 +198,10 @@ class MainActivity : AppCompatActivity() {
         main_now_wifi_ip.text = wifiInfo.ipAddress.toString()
     }
 
+    override fun onResume() {
+        super.onResume()
+        updateSupportApp()
+    }
 
     /**
      * @Title: registerWifiStateReceiver
@@ -265,10 +260,12 @@ class MainActivity : AppCompatActivity() {
     */
     private fun updateSimulatorInfo() {
         // 获取Xposed激活状态
-        if (XposedUtil.isXposedActive()) {
+        if (XposedUtil.isXposedActive() || XposedUtil.isExpModuleActive(this)) {
             main_simulator_active.text = getString(R.string.yes)
+            main_simulator_active.setTextColor(resources.getColor(R.color.green))
         }else {
             main_simulator_active.text = getString(R.string.no)
+            main_simulator_active.setTextColor(resources.getColor(R.color.red))
         }
         // 获取模拟状态
         if (wifiInfoPrefs.isSimulation) {

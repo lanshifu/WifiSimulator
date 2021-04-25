@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:padding="10dp"
     android:background="?android:attr/selectableItemBackground"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:id="@+id/llRoot">
 
     <!--应用图标-->
     <ImageView
@@ -22,6 +23,8 @@
         android:textSize="15sp"/>
     <!--选择框-->
     <CheckBox
+        android:clickable="false"
+        android:focusable="false"
         android:id="@+id/lai_app_check"
         android:layout_gravity="center"
         android:layout_width="wrap_content"

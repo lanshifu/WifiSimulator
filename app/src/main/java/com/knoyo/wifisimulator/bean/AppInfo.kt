@@ -19,5 +19,6 @@ data class AppInfo (
         // 名字
         val name: String,
         // 是否模拟
-        var isSimulation: Boolean = false
+        var isSimulation: Boolean = false,
+        var packageName:String
 )

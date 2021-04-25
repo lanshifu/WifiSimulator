@@ -55,7 +55,6 @@ class Main: IXposedHookZygoteInit, IXposedHookLoadPackage {
             // 方法执行后hook
             @Throws(Throwable::class)
             override fun beforeHookedMethod(param: MethodHookParam) {
-                Log.d("TAG", "beforeHookedMethod: ${lpparam.packageName}")
                 // 获取上下文
                 val mContext = param.args[0] as Context
                 // 获取配置
@@ -74,8 +73,10 @@ class Main: IXposedHookZygoteInit, IXposedHookLoadPackage {
                     return
                 }
 
+                val open = wifiInfoPrefs.apps.contains(lpparam.packageName)
+                Log.d("TAG", "beforeHookedMethod: ${lpparam.packageName},open=$open,wifiInfoPrefs.apps=${wifiInfoPrefs.apps}")
                 // 判断模拟WIFI应用列表是否包含此应用
-                if (wifiInfoPrefs.apps.contains(lpparam.packageName)) {
+                if (open) {
                     fakeWifiConnection.initFakeWifiConnection(lpparam)
                     SimulationWifiInfo.initSimulationWeWordWifi(mContext)
                 }

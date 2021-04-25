@@ -7,11 +7,19 @@
     tools:context=".activity.AppListActivity">
 
     <!--应用列表-->
-    <ListView
-        android:id="@+id/al_app_list"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/mRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"/>
 
-    </ListView>
+    <TextView
+        android:id="@+id/tvLoading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="加载中..."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </android.support.constraint.ConstraintLayout>
