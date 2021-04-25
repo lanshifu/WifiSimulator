@@ -6,6 +6,7 @@ import android.util.Log
 import com.knoyo.wifisimulator.preferences.WifiInfoPrefs
 import de.robv.android.xposed.*
 import de.robv.android.xposed.callbacks.XC_LoadPackage
+import kotlin.jvm.Throws
 
 /**
  * @Title: Main类
@@ -67,15 +68,14 @@ class Main: IXposedHookZygoteInit, IXposedHookLoadPackage {
                     }
                 }
 
+                // 判断是否开启模拟
+                if (!wifiInfoPrefs.isSimulation) {
+                    XposedBridge.log("FakeWifiConnection: 未开启模拟,${lpparam.packageName}")
+                    return
+                }
+
                 // 判断模拟WIFI应用列表是否包含此应用
                 if (wifiInfoPrefs.apps.contains(lpparam.packageName)) {
-
-                    // 判断是否开启模拟
-                    if (!wifiInfoPrefs.isSimulation) {
-                        XposedBridge.log("FakeWifiConnection: 未开启模拟,${lpparam.packageName}")
-                        return
-                    }
-
                     fakeWifiConnection.initFakeWifiConnection(lpparam)
                     SimulationWifiInfo.initSimulationWeWordWifi(mContext)
                 }

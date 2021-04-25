@@ -43,6 +43,10 @@ class MainActivity : AppCompatActivity() {
     // WIFI状态监听器
     private lateinit var wifiStateChangeListener: WifiStateReceiver.WifiStateChangeListener
 
+    private val defaultWifiName = "test"
+    private val defaultWifiBssid = "aa:aa:aa:bb:bb:b"
+    private val defaultIpAddress = 1921681010
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -105,20 +109,29 @@ class MainActivity : AppCompatActivity() {
             }
             // WIFI连接成功
             override fun onConnected() {
-                val wifiInfo = (this@MainActivity.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager).connectionInfo
-                // 设置WIFI信息
-                main_now_wifi_connect_status.text = this@MainActivity.getString(R.string.yes)
-                main_now_wifi_name.text = wifiInfo.ssid.replace("\"","")
-                main_now_wifi_bssid.text = wifiInfo.bssid
-                main_now_wifi_ip.text = wifiInfo.ipAddress.toString()
+                getCurrentConnectedWifiInfo()
             }
         }
         // 初始化WIFI广播接收器
         wifiStateReceiver = WifiStateReceiver(wifiStateChangeListener)
         // 获取配置文件中的信息
-        main_set_wifi_name.setText(wifiInfoPrefs.wifiName)
-        main_set_wifi_bssid.setText(wifiInfoPrefs.wifiBssid)
-        main_set_wifi_ip.setText(wifiInfoPrefs.wifiIP.toString())
+
+        var wifiName = wifiInfoPrefs.wifiName
+        var wifiBssid = wifiInfoPrefs.wifiBssid
+        var wifiIP = wifiInfoPrefs.wifiIP
+        if (wifiName.isEmpty()){
+            wifiName = defaultWifiName
+        }
+        if (wifiBssid.isEmpty()){
+            wifiBssid = defaultWifiBssid
+        }
+        if (wifiIP == 0){
+            wifiIP = defaultIpAddress
+        }
+
+        main_set_wifi_name.setText(wifiName)
+        main_set_wifi_bssid.setText(wifiBssid)
+        main_set_wifi_ip.setText(wifiIP.toString())
         // 设置WIFI信息按钮
         main_set_wifi_info.setOnClickListener {
             // 判断是否获取WIFI信息
@@ -185,6 +198,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun getCurrentConnectedWifiInfo(){
+        val wifiInfo = (this@MainActivity.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager).connectionInfo
+        // 设置WIFI信息
+        main_now_wifi_connect_status.text = this@MainActivity.getString(R.string.yes)
+        main_now_wifi_name.text = wifiInfo.ssid.replace("\"","")
+        main_now_wifi_bssid.text = wifiInfo.bssid
+        main_now_wifi_ip.text = wifiInfo.ipAddress.toString()
+    }
 
 
     /**
