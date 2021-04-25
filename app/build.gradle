@@ -7,7 +7,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.knoyo.wifisimulator"
+        applicationId "com.knoyo.wifisimulator2"
         minSdkVersion 21
         targetSdkVersion 27
         versionCode 1

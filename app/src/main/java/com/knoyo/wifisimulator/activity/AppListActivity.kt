@@ -1,15 +1,12 @@
 package com.knoyo.wifisimulator.activity
 
+import android.content.DialogInterface
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.CheckBox
-import android.widget.ImageView
-import android.widget.TextView
+import android.view.*
+import android.widget.*
 import com.google.gson.GsonBuilder
 import com.knoyo.wifisimulator.R
 import com.knoyo.wifisimulator.bean.AppInfo
@@ -37,7 +34,8 @@ class AppListActivity : AppCompatActivity() {
     // 应用信息工具
     private val appUtil = AppsUtil(this)
     // 所有应用信息
-    private lateinit var appsInfoMap: HashMap<String, AppInfo>
+    private lateinit var appsInfoList: MutableList<AppInfo>
+    private lateinit var appsInfoListFilter: MutableList<AppInfo>
     // 应用列表适配器
     private lateinit var appListAdapter: BaseAdapter
     // Gson
@@ -67,21 +65,31 @@ class AppListActivity : AppCompatActivity() {
         // 初始化WIFI信息配置
         wifiInfoPrefs =  WifiInfoPrefs(this)
         // 获取所有应用信息
-        appsInfoMap = appUtil.getAllAppsInfo()
-        // 同步模拟应用
-        syncSimulationApps()
-        // 初始化应用列表适配器
+        appUtil.getAllAppsInfo() {
+            // 同步模拟应用
+            appsInfoList = it
+            syncSimulationApps()
+
+            appsInfoListFilter = it
+            // 初始化应用列表适配器
+            initAdapter()
+
+        }
+
+    }
+
+    private fun initAdapter() {
         appListAdapter = object : BaseAdapter() {
             // 获取条目视图
             override fun getView(p0: Int, p1: View?, p2: ViewGroup): View? {
                 // 判断列表是否为空
-                if (appsInfoMap.size == 0) {
+                if (appsInfoListFilter.size == 0) {
                     return null
                 }
                 // 缓存视图容器
                 var convertView = p1
                 // 缓存应用条目视图容器
-                val appItemViewHolder:AppItemViewHolder
+                val appItemViewHolder: AppItemViewHolder
                 // 设置(获取)视图加载器
                 if (convertView == null) {
                     // 加载布局
@@ -97,7 +105,7 @@ class AppListActivity : AppCompatActivity() {
                     appItemViewHolder = convertView.tag as AppItemViewHolder
                 }
                 // 设置数据
-                val appInfo = appsInfoMap.indexOf(p0)!!
+                val appInfo = appsInfoListFilter.get(p0)
                 appItemViewHolder.icon.setImageDrawable(appInfo.icon)
                 appItemViewHolder.name.text = appInfo.name
                 appItemViewHolder.isSimulation.isChecked = appInfo.isSimulation
@@ -112,15 +120,15 @@ class AppListActivity : AppCompatActivity() {
 
             // 获取应用条目信息
             override fun getItem(p0: Int): Any? {
-                return when (appsInfoMap.size) {
+                return when (appsInfoListFilter.size) {
                     0 -> null
-                    else -> appsInfoMap.indexOf(p0)
+                    else -> appsInfoListFilter.get(p0)
                 }
             }
 
             // 获取条目ID号
             override fun getItemId(p0: Int): Long {
-                return when (appsInfoMap.size) {
+                return when (appsInfoListFilter.size) {
                     0 -> 0L
                     else -> p0.toLong()
                 }
@@ -128,7 +136,7 @@ class AppListActivity : AppCompatActivity() {
 
             // 获取总数
             override fun getCount(): Int {
-                return appsInfoMap.size
+                return appsInfoListFilter.size
             }
         }
         // 设置适配器
@@ -154,9 +162,21 @@ class AppListActivity : AppCompatActivity() {
         // 判断是否为空
         simulationAppList ?: return
         // 设置模拟应用状态
-        simulationAppList.forEach {
-            appsInfoMap[it]!!.isSimulation = true
+        simulationAppList.forEach { name ->
+            appsInfoList.find {
+                it.name == name
+            }.apply {
+                this?.isSimulation = true
+            }
         }
+    }
+
+    private fun showLoading(){
+
+    }
+
+    private fun hideLoading(){
+
     }
 
     /**
@@ -175,40 +195,64 @@ class AppListActivity : AppCompatActivity() {
     fun updateSimulationApps() {
         // 缓存模拟应用列表
         val simulationAppList = arrayListOf<String>()
-        appsInfoMap.forEach { k, v ->
-            if (v.isSimulation) {
-                simulationAppList.add(k)
+
+
+        appsInfoList.find {
+            it.isSimulation
+        }.apply {
+            this?.let {
+                simulationAppList.add(it.name)
             }
         }
         // 保存模拟应用列表到配置
         wifiInfoPrefs.apps = gson.toJson(simulationAppList)
     }
-}
 
-
-/**
- * @Title: HashMap扩展方法indexOf
- * @Class: com.knoyo.wifisimulator.activity
- * @Description: 通过下标查询对象
- * @author XueLong xuelongqy@foxmail.com
- * @date 2018/7/6 12:35
- * @update_author
- * @update_time
- * @version V1.0
- * @param
- * @return
- * @throws
-*/
-private fun <K, V> HashMap<K, V>.indexOf(p0: Int): V? {
-    var indexTmp = 0
-    var vTmp:V? = null
-    this.forEach { _, v ->
-        if (p0 == indexTmp) {
-            vTmp = v
-        }
-        indexTmp ++
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.options_menu, menu)
+        return super.onCreateOptionsMenu(menu)
     }
-    return vTmp
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when(item.getItemId()){
+            R.id.menu_search -> {
+                showSearchDialog()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun showSearchDialog() {
+        Log.d("TAG", "search: ")
+
+        val editText = EditText(this)
+
+        AlertDialog.Builder(this)
+                .setTitle("输入关键词")
+                .setView(editText)
+                .setPositiveButton("确定",object :DialogInterface.OnClickListener{
+                    override fun onClick(p0: DialogInterface?, p1: Int) {
+                        Toast.makeText(this@AppListActivity, "点击了${editText.text}", Toast.LENGTH_SHORT).show()
+                        search(editText.text.toString())
+                    }
+
+                }).show()
+
+    }
+
+    private fun search(name: String) {
+
+        var resultList = mutableListOf<AppInfo>()
+        appsInfoList.filter {
+            it.name.contains(name)
+        }?.apply {
+            resultList.addAll(this)
+        }
+
+        appsInfoListFilter = resultList
+        appListAdapter.notifyDataSetChanged()
+    }
 }
 
 /**

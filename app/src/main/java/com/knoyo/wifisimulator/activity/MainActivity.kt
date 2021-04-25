@@ -17,6 +17,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.widget.Toast
 import com.knoyo.wifisimulator.preferences.WifiInfoPrefs
+import com.knoyo.wifisimulator.util.AppsUtil
 import com.knoyo.wifisimulator.xposed.util.XposedUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import moe.feng.alipay.zerosdk.AlipayZeroSdk
@@ -53,6 +54,15 @@ class MainActivity : AppCompatActivity() {
         registerWifiStateReceiver()
 
         requestLocationPermission()
+
+        val expModuleActive = AppsUtil.isExpModuleActive(this)
+        if (expModuleActive) {
+            tvModuleActive.text = "模块已激活"
+            tvModuleActive.setTextColor(resources.getColor(R.color.green))
+        } else {
+            tvModuleActive.text = "模块未激活"
+            tvModuleActive.setTextColor(resources.getColor(R.color.red))
+        }
     }
 
     private fun requestLocationPermission() {
