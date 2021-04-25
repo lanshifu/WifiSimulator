@@ -1,11 +1,11 @@
 package com.knoyo.wifisimulator.xposed.hook
 
-import android.util.Log
 import com.knoyo.wifisimulator.xposed.util.XposedUtil
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers.findAndHookMethod
 import de.robv.android.xposed.callbacks.XC_LoadPackage
+import kotlin.jvm.Throws
 
 /**
  * @Title: QyLocker类
@@ -21,7 +21,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 object WifiSimulator {
 
     // WIFI模拟器包名
-    const val WIFI_SIMULATOR_PKG_NAME = "com.knoyo.wifisimulator"
+    const val WIFI_SIMULATOR_PKG_NAME = "com.knoyo.wifisimulator2"
 
     /**
      * @Title: initXposedActive方法

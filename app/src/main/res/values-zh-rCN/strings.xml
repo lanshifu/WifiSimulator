@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">WIFI 模拟器</string>
+    <string name="app_name">WIFI 模拟器2</string>
     <string name="setup">设置</string>
     <string name="use">使用</string>
     <string name="connectStatus">连接状态</string>
