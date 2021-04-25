@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WIFI Simulator2</string>
+    <string name="app_name">WIFI Simulator2.0</string>
     <string name="setup">Set up</string>
     <string name="use">Use</string>
     <string name="connectStatus">Connect status</string>
