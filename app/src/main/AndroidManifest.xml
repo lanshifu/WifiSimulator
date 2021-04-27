@@ -31,7 +31,7 @@
         <!-- 配置文件提供器 -->
         <provider
             android:name=".provider.SharedPreferencesProvider"
-            android:authorities="com.knoyo.wifisimulator.preferences"
+            android:authorities="com.knoyo.wifisimulator2.preferences"
             android:exported="true"
             tools:ignore="ExportedContentProvider" />
 

@@ -45,7 +45,7 @@ class WifiInfoPrefs(val context: Context) {
     // WIFI名字
     var wifiName: String
         get() {
-            return prefs.getString(WIFI_NAME, "")
+            return prefs.getString(WIFI_NAME, "") ?: ""
         }
         set(value) {
             val editor: SharedPreferences.Editor = prefs.edit()
@@ -56,7 +56,7 @@ class WifiInfoPrefs(val context: Context) {
     // WIFI BSSID
     var wifiBssid: String
         get() {
-            return prefs.getString(WIFI_BSSID, "")
+            return prefs.getString(WIFI_BSSID, "") ?: ""
         }
         set(value) {
             val editor: SharedPreferences.Editor = prefs.edit()

@@ -44,9 +44,11 @@ class MainActivity : AppCompatActivity() {
     // WIFI状态监听器
     private lateinit var wifiStateChangeListener: WifiStateReceiver.WifiStateChangeListener
 
-    private val defaultWifiName = "test"
-    private val defaultWifiBssid = "aa:aa:aa:bb:bb:b"
-    private val defaultIpAddress = 1921681010
+    private val defaultWifiName = ""
+    private val defaultWifiBssid = ""
+    private val defaultIpAddress = 0
+
+    private val REQUEST_CODE = 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +66,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun requestLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),10)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),REQUEST_CODE)
+        } else {
+            getCurrentConnectedWifiInfo()
         }
     }
 
@@ -190,12 +194,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getCurrentConnectedWifiInfo(){
-        val wifiInfo = (this@MainActivity.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager).connectionInfo
-        // 设置WIFI信息
-        main_now_wifi_connect_status.text = this@MainActivity.getString(R.string.yes)
-        main_now_wifi_name.text = wifiInfo.ssid.replace("\"","")
-        main_now_wifi_bssid.text = wifiInfo.bssid
-        main_now_wifi_ip.text = wifiInfo.ipAddress.toString()
+        try {
+            val wifiInfo = (this@MainActivity.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager).connectionInfo
+            // 设置WIFI信息
+            main_now_wifi_connect_status.text = this@MainActivity.getString(R.string.yes)
+            main_now_wifi_name.text = wifiInfo.ssid.replace("\"","")
+            main_now_wifi_bssid.text = wifiInfo.bssid
+            main_now_wifi_ip.text = wifiInfo.ipAddress.toString()
+        } catch (e: Exception) {
+        }
     }
 
     override fun onResume() {
@@ -277,5 +284,12 @@ class MainActivity : AppCompatActivity() {
         main_simulator_wifi_name.text = wifiInfoPrefs.wifiName
         main_simulator_wifi_bssid.text = wifiInfoPrefs.wifiBssid
         main_simulator_wifi_ip.text = wifiInfoPrefs.wifiIP.toString()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE){
+            getCurrentConnectedWifiInfo()
+        }
     }
 }

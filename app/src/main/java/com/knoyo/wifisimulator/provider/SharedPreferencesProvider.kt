@@ -20,7 +20,7 @@ class SharedPreferencesProvider: RemotePreferenceProvider(
 
     // 伴生对象
     companion object {
-        const val PREFERENCE_PROVIDER_AUTHORITY = "com.knoyo.wifisimulator.preferences"
+        const val PREFERENCE_PROVIDER_AUTHORITY = "com.knoyo.wifisimulator2.preferences"
         const val PREFS_WIFI_INFO = "wifi_info"
     }
 

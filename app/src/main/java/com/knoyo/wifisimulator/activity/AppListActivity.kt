@@ -230,6 +230,7 @@ class AppListActivity : AppCompatActivity() {
     inner class AppAdapter(list: MutableList<AppInfo>) : BaseQuickAdapter<AppInfo, BaseViewHolder>(R.layout.layout_app_item, list) {
         override fun convert(helper: BaseViewHolder, item: AppInfo) {
             helper.setText(R.id.lai_app_name, item.name)
+            helper.setText(R.id.lai_package_name, item.packageName)
             helper.setImageDrawable(R.id.lai_app_icon, item.icon)
             helper.setChecked(R.id.lai_app_check, item.isSimulation)
 
